@@ -74,7 +74,9 @@ The DVC pipeline stages are isolated: Kaggle/O*NET ingestion, O*NET consistency 
 quality validation, preprocessing, candidate-ID splitting, and semantic alignment. A
 candidate split writes only to `data/processed/splits/`.
 
-The repository uses a local DVC remote named `dvc-storage`. For an external remote:
+The development workspace used a machine-local DVC remote named `dvc-storage`; that storage
+is not included in this GitHub snapshot. No shared DVC remote is configured. Configure one
+before using `dvc pull` or `dvc push`. For an external remote:
 
 ```powershell
 dvc remote add -d storage s3://your-bucket/candidate-screening
