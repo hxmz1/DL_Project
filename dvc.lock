@@ -1,0 +1,259 @@
+schema: '2.0'
+stages:
+  kaggle_ingestion:
+    cmd: python -m src.ingestion.ingest_kaggle
+    deps:
+    - path: data/raw/kaggle/extracted/Resume/Resume.csv
+      hash: md5
+      md5: a67f87e78969c847105b09e8deae7c9b
+      size: 56273235
+    outs:
+    - path: data/interim/kaggle/resumes.csv
+      hash: md5
+      md5: 4531f8b97d6406202c647e3ab9f9e606
+      size: 56239062
+    - path: logs/ingestion_kaggle.log
+      hash: md5
+      md5: 642b0ce425eef7e1b8aeeb3c76167080
+      size: 147
+    - path: reports/kaggle_ingestion_report.json
+      hash: md5
+      md5: 70932dbdb6e7b68d6a01e70e58b32b20
+      size: 1579
+  onet_ingestion:
+    cmd: python -m src.ingestion.ingest_onet
+    deps:
+    - path: data/raw/onet/essential_skills.csv
+      hash: md5
+      md5: 332c6765cf98de22dfd0336e34edd2c8
+      size: 2328135
+    - path: data/raw/onet/occupation_data.csv
+      hash: md5
+      md5: 9d827434a2e389d74b1baa737750f7fa
+      size: 268030
+    - path: data/raw/onet/software_skills.csv
+      hash: md5
+      md5: dfceada6b945186cd1c799eef16e6372
+      size: 3557545
+    - path: data/raw/onet/task_statements.csv
+      hash: md5
+      md5: f2a7171b051e9844e165cd011f409203
+      size: 3461375
+    outs:
+    - path: logs/ingestion_onet.log
+      hash: md5
+      md5: f449260b2f202eab594a3d6ad074018a
+      size: 466
+    - path: reports/onet_ingestion_report.json
+      hash: md5
+      md5: d1873a85f8cbd3795f0cc2301db92f33
+      size: 3717
+  onet_validation:
+    cmd: python -m src.ingestion.validate_onet
+    deps:
+    - path: data/raw/onet/essential_skills.csv
+      hash: md5
+      md5: 332c6765cf98de22dfd0336e34edd2c8
+      size: 2328135
+    - path: data/raw/onet/occupation_data.csv
+      hash: md5
+      md5: 9d827434a2e389d74b1baa737750f7fa
+      size: 268030
+    - path: data/raw/onet/software_skills.csv
+      hash: md5
+      md5: dfceada6b945186cd1c799eef16e6372
+      size: 3557545
+    - path: data/raw/onet/task_statements.csv
+      hash: md5
+      md5: f2a7171b051e9844e165cd011f409203
+      size: 3461375
+    outs:
+    - path: logs/onet_consistency.log
+      hash: md5
+      md5: b80e6e7e8e74d4f0cb211beb6c783c26
+      size: 202
+    - path: reports/onet_consistency_report.json
+      hash: md5
+      md5: 8f685bb0db5c58f5efee69c35c9dca10
+      size: 1245
+  onet_preparation:
+    cmd: python -m src.ingestion.prepare_onet
+    deps:
+    - path: data/raw/onet/essential_skills.csv
+      hash: md5
+      md5: 332c6765cf98de22dfd0336e34edd2c8
+      size: 2328135
+    - path: data/raw/onet/occupation_data.csv
+      hash: md5
+      md5: 9d827434a2e389d74b1baa737750f7fa
+      size: 268030
+    - path: data/raw/onet/software_skills.csv
+      hash: md5
+      md5: dfceada6b945186cd1c799eef16e6372
+      size: 3557545
+    - path: data/raw/onet/task_statements.csv
+      hash: md5
+      md5: f2a7171b051e9844e165cd011f409203
+      size: 3461375
+    outs:
+    - path: data/interim/onet/essential_skills.csv
+      hash: md5
+      md5: c7c3f60384f505476da8a433564a504e
+      size: 2252739
+    - path: data/interim/onet/occupations.csv
+      hash: md5
+      md5: 0add9add81ff5939ff6c2860dbc34909
+      size: 268033
+    - path: data/interim/onet/software_skills.csv
+      hash: md5
+      md5: d5ff3b825d333ac21ef1d148c8cbd57d
+      size: 3557548
+    - path: data/interim/onet/task_statements.csv
+      hash: md5
+      md5: 99599a2eabca7013f982b9874968e52c
+      size: 3497880
+    - path: logs/prepare_onet.log
+      hash: md5
+      md5: 75e99e3ff9409ff3397965263aa0e5f3
+      size: 462
+    - path: reports/onet_preparation_report.json
+      hash: md5
+      md5: dcc5ba7aafa58c1fca09a22f3779f984
+      size: 3006
+  validation:
+    cmd: python -m src.validation.run_validation
+    deps:
+    - path: configs/params.yaml
+      hash: md5
+      md5: 0fb8f3686cb9b3de26637c25e26ccb0b
+      size: 4102
+    - path: data/interim/kaggle/resumes.csv
+      hash: md5
+      md5: 4531f8b97d6406202c647e3ab9f9e606
+      size: 56239062
+    - path: data/interim/onet/essential_skills.csv
+      hash: md5
+      md5: c7c3f60384f505476da8a433564a504e
+      size: 2252739
+    - path: data/interim/onet/occupations.csv
+      hash: md5
+      md5: 0add9add81ff5939ff6c2860dbc34909
+      size: 268033
+    - path: data/interim/onet/software_skills.csv
+      hash: md5
+      md5: d5ff3b825d333ac21ef1d148c8cbd57d
+      size: 3557548
+    - path: data/interim/onet/task_statements.csv
+      hash: md5
+      md5: 99599a2eabca7013f982b9874968e52c
+      size: 3497880
+    - path: src/validation/data_quality.py
+      hash: md5
+      md5: cbdbf33c1b6c5cf697b077b885496908
+      size: 8125
+    - path: src/validation/run_validation.py
+      hash: md5
+      md5: db99a67068d5e1beaa89a7224c388cc2
+      size: 3175
+    outs:
+    - path: reports/data_quality_report.json
+      hash: md5
+      md5: b2b3799baeb7277d2c527f3abe4f81c0
+      size: 3415
+    - path: reports/stage_validation_report.json
+      hash: md5
+      md5: 15ff2450b11c092b8ae8030bda95f101
+      size: 1085
+  preprocessing:
+    cmd: python -m src.preprocessing.text_preprocessing
+    deps:
+    - path: configs/params.yaml
+      hash: md5
+      md5: 0fb8f3686cb9b3de26637c25e26ccb0b
+      size: 4102
+    - path: data/interim/kaggle/resumes.csv
+      hash: md5
+      md5: 4531f8b97d6406202c647e3ab9f9e606
+      size: 56239062
+    - path: data/interim/onet/occupations.csv
+      hash: md5
+      md5: 0add9add81ff5939ff6c2860dbc34909
+      size: 268033
+    - path: src/preprocessing/text_preprocessing.py
+      hash: md5
+      md5: bdf8b5d9b7b029be6d3b4347863f41b4
+      size: 3160
+    outs:
+    - path: data/processed/structured
+      hash: md5
+      md5: 78e5f7239855718abc4a04496aece30c.dir
+      size: 2166
+      nfiles: 4
+    - path: data/processed/text/kaggle_text_preprocessed.csv
+      hash: md5
+      md5: e152080d6dcdd73408634bfd7dca21c9
+      size: 55076982
+    - path: data/processed/text/kaggle_text_summary.json
+      hash: md5
+      md5: ce3de9609e92626d64e9ee6f9fdd639e
+      size: 366
+  alignment:
+    cmd: python -m src.alignment.occupation_alignment
+    deps:
+    - path: configs/params.yaml
+      hash: md5
+      md5: 0fb8f3686cb9b3de26637c25e26ccb0b
+      size: 4102
+    - path: data/interim/kaggle/resumes.csv
+      hash: md5
+      md5: 4531f8b97d6406202c647e3ab9f9e606
+      size: 56239062
+    - path: data/interim/onet/occupations.csv
+      hash: md5
+      md5: 0add9add81ff5939ff6c2860dbc34909
+      size: 268033
+    - path: src/alignment/occupation_alignment.py
+      hash: md5
+      md5: 4110c487bfe5850de09b905119bda377
+      size: 6645
+    outs:
+    - path: reports/multimodal_alignment_report.json
+      hash: md5
+      md5: 2d199ff5af0d8fa5e0df706fc508c00f
+      size: 34295
+    - path: reports/multimodal_alignment_report.md
+      hash: md5
+      md5: aa19e87484f6c30a579c6c51e1501e6e
+      size: 2147
+  candidate_split:
+    cmd: python -m src.preprocessing.data_split
+    deps:
+    - path: configs/params.yaml
+      hash: md5
+      md5: 0fb8f3686cb9b3de26637c25e26ccb0b
+      size: 4102
+    - path: data/interim/kaggle/resumes.csv
+      hash: md5
+      md5: 4531f8b97d6406202c647e3ab9f9e606
+      size: 56239062
+    - path: src/preprocessing/data_split.py
+      hash: md5
+      md5: 4be788818ec4aa4bf8a8d564c1178c1c
+      size: 8391
+    outs:
+    - path: data/processed/splits/split_statistics.json
+      hash: md5
+      md5: 9fa8d8e959173f9887a9775a9f42dff9
+      size: 2308
+    - path: data/processed/splits/test.csv
+      hash: md5
+      md5: d5b9787b0117a7b34d2de935b5f7c214
+      size: 8675434
+    - path: data/processed/splits/train.csv
+      hash: md5
+      md5: 28774af4962362505a3461095c36c4b9
+      size: 39346399
+    - path: data/processed/splits/validation.csv
+      hash: md5
+      md5: 044870370bb7e85ccca47222b9593106
+      size: 8217307

@@ -1,0 +1,6 @@
+outs:
+- md5: ae3d15970c251d91ac6428c645f33832.dir
+  size: 9615085
+  nfiles: 4
+  hash: md5
+  path: onet

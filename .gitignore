@@ -1,0 +1,41 @@
+.venv/
+__pycache__/
+*.py[cod]
+*.log
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.DS_Store
+
+# project data
+# keep raw data local and untracked unless explicitly added
+# the repository keeps project source, config and generated reports
+
+data/raw/*
+!data/raw/
+!data/raw/kaggle/
+!data/raw/kaggle/extracted/
+!data/raw/kaggle/extracted/Resume/
+!data/raw/**/*.dvc
+!data/raw/*.dvc
+data/interim/
+data/processed/
+logs/
+!data/raw/**/*.dvc
+!data/raw/*.dvc
+
+# DVC cache and local metadata
+.dvc/cache/
+.dvc/tmp/
+dvc-storage/
+
+# generated pipeline artifacts (tracked by DVC)
+reports/*_report.json
+reports/pipeline_summary.json
+reports/multimodal_alignment_report.json
+reports/multimodal_alignment_report.md
+reports/kaggle_ingestion_report.json
+reports/onet_ingestion_report.json
+reports/onet_consistency_report.json
+reports/onet_preparation_report.json

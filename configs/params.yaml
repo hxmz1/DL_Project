@@ -1,0 +1,151 @@
+project:
+  name: "Candidate Screening AI"
+  python_version: "3.11"
+  random_seed: 42
+  root_dir: "."
+
+paths:
+  raw:
+    kaggle_csv: "data/raw/kaggle/extracted/Resume/Resume.csv"
+    onet_dir: "data/raw/onet"
+  interim:
+    kaggle_csv: "data/interim/kaggle/resumes.csv"
+    onet_dir: "data/interim/onet"
+  processed:
+    root: "data/processed"
+    text_dir: "data/processed/text"
+    structured_dir: "data/processed/structured"
+    alignment_dir: "data/processed/alignment"
+  reports_dir: "reports"
+  logs_dir: "logs"
+
+kaggle:
+  required_columns:
+    - "ID"
+    - "Resume_str"
+    - "Resume_html"
+    - "Category"
+  quality:
+    max_missing_value_rate: 0.05
+    max_duplicate_rate: 0.0
+    max_blank_text_rate: 0.02
+    id_dtype: "integer"
+    text_dtype: "string"
+    valid_categories: null
+    duplicate_text_is_critical: false
+  output_file: "data/interim/kaggle/resumes.csv"
+  report_file: "reports/kaggle_ingestion_report.json"
+
+onet:
+  raw_files:
+    occupation_data: "data/raw/onet/occupation_data.csv"
+    software_skills: "data/raw/onet/software_skills.csv"
+    essential_skills: "data/raw/onet/essential_skills.csv"
+    task_statements: "data/raw/onet/task_statements.csv"
+  interim_files:
+    occupations: "data/interim/onet/occupations.csv"
+    software_skills: "data/interim/onet/software_skills.csv"
+    essential_skills: "data/interim/onet/essential_skills.csv"
+    task_statements: "data/interim/onet/task_statements.csv"
+  required_columns:
+    occupation_data:
+      - "O*NET-SOC Code"
+      - "Title"
+      - "Description"
+    software_skills:
+      - "O*NET-SOC Code"
+      - "Title"
+      - "Workplace Example"
+      - "Element ID"
+      - "Element Name"
+      - "Hot Technology"
+      - "In Demand"
+    essential_skills:
+      - "O*NET-SOC Code"
+      - "Title"
+      - "Element ID"
+      - "Element Name"
+      - "Scale ID"
+      - "Scale Name"
+      - "Data Value"
+    task_statements:
+      - "O*NET-SOC Code"
+      - "Title"
+      - "Task ID"
+      - "Task"
+  quality:
+    max_missing_value_rate: 0.10
+    max_duplicate_rate: 0.01
+    max_invalid_code_rate: 0.01
+    legitimate_blank_fields:
+      essential_skills:
+        - "Recommend Suppress"
+        - "Not Relevant"
+        - "N"
+        - "Standard Error"
+        - "Lower CI Bound"
+        - "Upper CI Bound"
+      task_statements:
+        - "Incumbents Responding"
+    numeric_ranges:
+      essential_skills:
+        "Data Value": [0.0, 5.0]
+      task_statements:
+        "Incumbents Responding": [0.0, null]
+
+validation:
+  warn_on_missing_value_rate: 0.02
+  critical_missing_value_rate: 0.20
+  warn_on_duplicate_rate: 0.01
+  critical_duplicate_rate: 0.10
+  allow_empty_categories: false
+
+alignment:
+  method: "rule_based_similarity"
+  similarity_threshold: 0.30
+  ambiguous_threshold: 0.05
+  max_candidates_per_category: 5
+  report_path: "reports/multimodal_alignment_report.json"
+  markdown_path: "reports/multimodal_alignment_report.md"
+
+preprocessing:
+  max_text_length: 15000
+  normalize_whitespace: true
+  lowercase_text: false
+  preserve_raw: true
+
+pipeline:
+  stage_names:
+    - "kaggle_ingestion"
+    - "onet_ingestion"
+    - "validation"
+    - "preprocessing"
+    - "alignment"
+    - "reporting"
+  enable_dvc: true
+  quick_mode: false
+
+splits:
+  train: 0.70
+  validation: 0.15
+  test: 0.15
+  stratify: true
+
+logging:
+  format: "%(asctime)s | %(levelname)s | %(stage)s | %(message)s"
+  kaggle_log: "logs/ingestion_kaggle.log"
+  onet_ingestion_log: "logs/ingestion_onet.log"
+  onet_consistency_log: "logs/onet_consistency.log"
+  pipeline_log: "logs/pipeline.log"
+
+dvc:
+  local_remote: "dvc-storage"
+  raw_target: "data/raw"
+  processed_target: "data/processed"
+
+reporting:
+  data_card_path: "reports/data_card.md"
+  fusion_study_path: "reports/multimodal_fusion_study.md"
+  strategy_path: "reports/fusion_strategy_recommendation.md"
+  architecture_path: "reports/fusion_architecture_proposal.md"
+  task3_report_path: "reports/TASK3_IMPLEMENTATION_REPORT.md"

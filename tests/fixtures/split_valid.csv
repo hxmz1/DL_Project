@@ -1,0 +1,11 @@
+ID,Resume_str,Resume_html,Category
+1,Python developer,<p>A</p>,ENGINEERING
+2,Python developer,<p>A</p>,ENGINEERING
+3,SQL data engineer,<p>B</p>,DATA
+4,Java backend engineer,<p>C</p>,ENGINEERING
+5,Project manager,<p>D</p>,MANAGEMENT
+6,Project manager,<p>D</p>,MANAGEMENT
+7,Sales executive,<p>E</p>,SALES
+8,Marketing analyst,<p>F</p>,MARKETING
+9,Accountant,<p>G</p>,ACCOUNTANT
+10,Accountant,<p>G</p>,ACCOUNTANT

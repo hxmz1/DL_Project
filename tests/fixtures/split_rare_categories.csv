@@ -1,0 +1,6 @@
+ID,Resume_str,Resume_html,Category
+1,Developer one,<p>A</p>,RARE-A
+2,Developer two,<p>B</p>,RARE-B
+3,Developer three,<p>C</p>,COMMON
+4,Developer four,<p>D</p>,COMMON
+5,Developer five,<p>E</p>,COMMON

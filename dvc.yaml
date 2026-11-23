@@ -1,0 +1,96 @@
+stages:
+  kaggle_ingestion:
+    cmd: python -m src.ingestion.ingest_kaggle
+    deps:
+      - data/raw/kaggle/extracted/Resume/Resume.csv
+    outs:
+      - data/interim/kaggle/resumes.csv
+      - reports/kaggle_ingestion_report.json
+      - logs/ingestion_kaggle.log
+
+  onet_ingestion:
+    cmd: python -m src.ingestion.ingest_onet
+    deps:
+      - data/raw/onet/occupation_data.csv
+      - data/raw/onet/software_skills.csv
+      - data/raw/onet/essential_skills.csv
+      - data/raw/onet/task_statements.csv
+    outs:
+      - reports/onet_ingestion_report.json
+      - logs/ingestion_onet.log
+
+  onet_validation:
+    cmd: python -m src.ingestion.validate_onet
+    deps:
+      - data/raw/onet/occupation_data.csv
+      - data/raw/onet/software_skills.csv
+      - data/raw/onet/essential_skills.csv
+      - data/raw/onet/task_statements.csv
+    outs:
+      - reports/onet_consistency_report.json
+      - logs/onet_consistency.log
+
+  onet_preparation:
+    cmd: python -m src.ingestion.prepare_onet
+    deps:
+      - data/raw/onet/occupation_data.csv
+      - data/raw/onet/software_skills.csv
+      - data/raw/onet/essential_skills.csv
+      - data/raw/onet/task_statements.csv
+    outs:
+      - data/interim/onet/occupations.csv
+      - data/interim/onet/software_skills.csv
+      - data/interim/onet/essential_skills.csv
+      - data/interim/onet/task_statements.csv
+      - reports/onet_preparation_report.json
+      - logs/prepare_onet.log
+
+  validation:
+    cmd: python -m src.validation.run_validation
+    deps:
+      - data/interim/kaggle/resumes.csv
+      - data/interim/onet/occupations.csv
+      - data/interim/onet/software_skills.csv
+      - data/interim/onet/essential_skills.csv
+      - data/interim/onet/task_statements.csv
+      - src/validation/data_quality.py
+      - src/validation/run_validation.py
+      - configs/params.yaml
+    outs:
+      - reports/data_quality_report.json
+      - reports/stage_validation_report.json
+
+  preprocessing:
+    cmd: python -m src.preprocessing.text_preprocessing
+    deps:
+      - data/interim/kaggle/resumes.csv
+      - data/interim/onet/occupations.csv
+      - src/preprocessing/text_preprocessing.py
+      - configs/params.yaml
+    outs:
+      - data/processed/text/kaggle_text_preprocessed.csv
+      - data/processed/text/kaggle_text_summary.json
+      - data/processed/structured
+
+  candidate_split:
+    cmd: python -m src.preprocessing.data_split
+    deps:
+      - data/interim/kaggle/resumes.csv
+      - src/preprocessing/data_split.py
+      - configs/params.yaml
+    outs:
+      - data/processed/splits/train.csv
+      - data/processed/splits/validation.csv
+      - data/processed/splits/test.csv
+      - data/processed/splits/split_statistics.json
+
+  alignment:
+    cmd: python -m src.alignment.occupation_alignment
+    deps:
+      - data/interim/kaggle/resumes.csv
+      - data/interim/onet/occupations.csv
+      - src/alignment/occupation_alignment.py
+      - configs/params.yaml
+    outs:
+      - reports/multimodal_alignment_report.json
+      - reports/multimodal_alignment_report.md

@@ -1,0 +1,3 @@
+# Ignore DVC's own transient cache directories.
+**/.dvc/cache/**
+**/.dvc/tmp/**
